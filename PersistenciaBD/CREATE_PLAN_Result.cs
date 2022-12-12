@@ -11,7 +11,7 @@ namespace PersistenciaBD
 {
     using System;
     
-    public partial class CREATE_ROL_Result
+    public partial class CREATE_PLAN_Result
     {
         public Nullable<int> RESPONSE_NUMBER { get; set; }
         public string RESPONSE_MESSAGE { get; set; }

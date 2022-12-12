@@ -18,7 +18,6 @@ namespace PersistenciaBD
         public Actividad()
         {
             this.Act_de_mejora = new HashSet<Act_de_mejora>();
-            this.Alerta = new HashSet<Alerta>();
             this.Asesoria = new HashSet<Asesoria>();
             this.Capacitacion = new HashSet<Capacitacion>();
         }
@@ -26,7 +25,7 @@ namespace PersistenciaBD
         public int id_act { get; set; }
         public System.DateTime Fecha_act { get; set; }
         public System.DateTime Hora_act { get; set; }
-        public Nullable<int> Contador { get; set; }
+        public int Contador { get; set; }
         public int Prof_id_profe { get; set; }
         public int Cliente_id_emp { get; set; }
         public string Tipo_actividad { get; set; }
@@ -37,8 +36,6 @@ namespace PersistenciaBD
         public virtual ICollection<Act_de_mejora> Act_de_mejora { get; set; }
         public virtual Cliente Cliente { get; set; }
         public virtual Profesional Profesional { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Alerta> Alerta { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Asesoria> Asesoria { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

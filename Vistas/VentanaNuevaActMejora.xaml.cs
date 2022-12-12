@@ -33,6 +33,7 @@ namespace Vistas
             timePickerHoraActMejora.SourceHours = horas;
             timePickerHoraActMejora.SourceMinutes = minutos;
             FormatoCalendario();
+            RemoverFinesDeSemana(datePickerFechaActMejora);
         }
         public int idCliente;
         public int idProfesional;
@@ -43,6 +44,23 @@ namespace Vistas
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-CL");
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-CL");
             datePickerFechaActMejora.Language = XmlLanguage.GetLanguage("es-CL");
+        }
+        private void RemoverFinesDeSemana(DatePicker DatePicker)
+        {
+            var datePicker = DatePicker;
+            if (datePicker == null)
+                return;
+            datePicker.DisplayDateStart = DateTime.Now.AddDays(2);
+            var minDate = datePicker.DisplayDateStart ?? DateTime.MinValue;
+            var maxDate = DateTime.Today.AddYears(15);
+
+            for (var day = minDate; day <= maxDate && DateTime.MaxValue > day; day = day.AddDays(1))
+            {
+                if (day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    datePicker.BlackoutDates.Add(new CalendarDateRange(day));
+                }
+            }
         }
         private bool ValidarCampos()
         {

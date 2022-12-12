@@ -14,11 +14,20 @@ namespace PersistenciaBD
     
     public partial class Alerta
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Alerta()
+        {
+            this.Accidente = new HashSet<Accidente>();
+        }
+    
+        public int id_alerta { get; set; }
         public string Motivo_alerta { get; set; }
+        public string Registro { get; set; }
         public int Gerente_id_emp { get; set; }
         public int Cliente_id_emp { get; set; }
-        public int Actividad_id_act { get; set; }
     
-        public virtual Actividad Actividad { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Accidente> Accidente { get; set; }
+        public virtual Cliente Cliente { get; set; }
     }
 }

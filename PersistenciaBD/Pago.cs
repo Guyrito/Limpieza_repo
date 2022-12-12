@@ -23,6 +23,7 @@ namespace PersistenciaBD
         public Nullable<int> Plan_id_plan { get; set; }
         public Nullable<int> Contrato_id_cont { get; set; }
     
+        public virtual Comprobantes Comprobantes { get; set; }
         public virtual Contrato Contrato { get; set; }
         public virtual Plan Plan { get; set; }
     }

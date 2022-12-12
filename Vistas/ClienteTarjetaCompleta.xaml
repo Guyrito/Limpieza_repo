@@ -298,20 +298,25 @@
                                   Height="30" 
                                   Content="AGREGAR VISITA" 
                                   FontWeight="Bold" 
+                                  Background="#FF4E16D1"
                                   FontSize="10" Margin="31,10,161,10" Grid.ColumnSpan="2" Click="BtnAgregarVisita_Click"/>
                         <mah:Tile x:Name="BtnAgregarCapacitacion" Grid.Column="1" 
                                   Height="30" 
+                                  Background="#FF4E16D1"
                                   Content="AGREGAR CAPACITACIÓN" 
                                   FontWeight="Bold" 
+
                                   FontSize="10" Margin="75,10,117,10" Grid.ColumnSpan="2" Click="BtnAgregarCapacitacion_Click"/>
                         <mah:Tile x:Name="BtnAgregarAsesoria" Grid.Column="2" 
                                   Height="30" 
                                   Content="AGREGAR ASESORIA" 
+                                  Background="#FF4E16D1"
                                   FontWeight="Bold" 
                                   FontSize="10" Margin="127,10,65,10" Grid.ColumnSpan="2" Click="BtnAgregarAsesoria_Click"/>
                         <mah:Tile x:Name="BtnAgregarActividadMejora" Grid.Column="4" 
                                   Height="30" 
                                   Content="AGREGAR ACTV. MEJORA" 
+                                  Background="#FF4E16D1"
                                   FontWeight="Bold" 
                                   FontSize="10" Click="BtnAgregarActividadMejora_Click"/>
                         <Button x:Name="btnDescContrato" Visibility="Hidden" Content="Descargar Contrato" HorizontalAlignment="Left" VerticalAlignment="Center" Width="126" Click="btnDescContrato_Click" Grid.Column="1" Grid.ColumnSpan="2" Margin="142,0,0,0"/>

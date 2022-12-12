@@ -45,7 +45,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Act_de_mejora' no tiene definida 
           <Property Name="id_act" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Fecha_act" Type="date" Nullable="false" />
           <Property Name="Hora_act" Type="datetime" Nullable="false" />
-          <Property Name="Contador" Type="int" />
+          <Property Name="Contador" Type="int" Nullable="false" />
           <Property Name="Prof_id_profe" Type="int" Nullable="false" />
           <Property Name="Cliente_id_emp" Type="int" Nullable="false" />
           <Property Name="Tipo_actividad" Type="varchar" MaxLength="50" Nullable="false" />
@@ -59,19 +59,15 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Act_de_mejora' no tiene definida 
           <Property Name="id_adm" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre_adm" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
-        <!--Errores durante la generación:
-advertencia 6002: La tabla o vista 'BD_NMA.dbo.Alerta' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="Alerta">
           <Key>
-            <PropertyRef Name="Motivo_alerta" />
-            <PropertyRef Name="Gerente_id_emp" />
-            <PropertyRef Name="Cliente_id_emp" />
-            <PropertyRef Name="Actividad_id_act" />
+            <PropertyRef Name="id_alerta" />
           </Key>
+          <Property Name="id_alerta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Motivo_alerta" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="Registro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Gerente_id_emp" Type="int" Nullable="false" />
           <Property Name="Cliente_id_emp" Type="int" Nullable="false" />
-          <Property Name="Actividad_id_act" Type="int" Nullable="false" />
         </EntityType>
         <!--Errores durante la generación:
 advertencia 6002: La tabla o vista 'BD_NMA.dbo.Asesoria' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
@@ -276,6 +272,18 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Actividad_id_act" Type="int" Nullable="false" />
           <Property Name="Test" Type="varchar" MaxLength="200" />
         </EntityType>
+        <Association Name="FK_Accidente_Alerta">
+          <End Role="Alerta" Type="Self.Alerta" Multiplicity="1" />
+          <End Role="Accidente" Type="Self.Accidente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Alerta">
+              <PropertyRef Name="id_alerta" />
+            </Principal>
+            <Dependent Role="Accidente">
+              <PropertyRef Name="Alerta_id_alerta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Act_de_mejora_Actividad">
           <End Role="Actividad" Type="Self.Actividad" Multiplicity="1" />
           <End Role="Act_de_mejora" Type="Self.Act_de_mejora" Multiplicity="*" />
@@ -312,15 +320,15 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Alerta_Actividad">
-          <End Role="Actividad" Type="Self.Actividad" Multiplicity="1" />
+        <Association Name="FK_Alerta_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="1" />
           <End Role="Alerta" Type="Self.Alerta" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Actividad">
-              <PropertyRef Name="id_act" />
+            <Principal Role="Cliente">
+              <PropertyRef Name="id_emp" />
             </Principal>
             <Dependent Role="Alerta">
-              <PropertyRef Name="Actividad_id_act" />
+              <PropertyRef Name="Cliente_id_emp" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -381,6 +389,18 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Principal>
             <Dependent Role="Gerente">
               <PropertyRef Name="Cliente_id_clien" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pago_Comprobantes">
+          <End Role="Comprobantes" Type="Self.Comprobantes" Multiplicity="0..1" />
+          <End Role="Pago" Type="Self.Pago" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comprobantes">
+              <PropertyRef Name="id_comprobante" />
+            </Principal>
+            <Dependent Role="Pago">
+              <PropertyRef Name="Comprobante_id_co" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -492,6 +512,13 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="CREATE_ACCIDENTE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Tipo_acc" Type="varchar" Mode="In" />
+          <Parameter Name="Descripcion_acc" Type="varchar" Mode="In" />
+          <Parameter Name="Gravedad_acc" Type="varchar" Mode="In" />
+          <Parameter Name="Alerta_id_alerta" Type="int" Mode="In" />
+          <Parameter Name="Profesional_id_prof" Type="int" Mode="In" />
+        </Function>
         <Function Name="CREATE_ACT_DE_MEJORA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Nombre_act_mejora" Type="varchar" Mode="In" />
           <Parameter Name="Descripcion_act_mejora" Type="varchar" Mode="In" />
@@ -511,6 +538,15 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Parameter Name="Tipo_actividad" Type="varchar" Mode="In" />
           <Parameter Name="Estado" Type="int" Mode="In" />
           <Parameter Name="Retraso" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CREATE_ADMINISTRADOR" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nombre_adm" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="CREATE_ALERTA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Motivo_alerta" Type="varchar" Mode="In" />
+          <Parameter Name="Registro" Type="varchar" Mode="In" />
+          <Parameter Name="Gerente_id_emp" Type="int" Mode="In" />
+          <Parameter Name="AlertaCliente_id_emp" Type="int" Mode="In" />
         </Function>
         <Function Name="CREATE_ASESORIA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Razon_ases" Type="varchar" Mode="In" />
@@ -541,6 +577,11 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Parameter Name="ClienteProfesional_id_prof" Type="int" Mode="In" />
           <Parameter Name="Fono_cliente" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="CREATE_COMPROBANTES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Archivo" Type="varbinary(max)" Mode="In" />
+          <Parameter Name="Extension" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Nombre_comprobante" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="CREATE_CONTRATO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Vencimiento_cont" Type="date" Mode="In" />
           <Parameter Name="Archivo_pdf" Type="varbinary(max)" Mode="In" />
@@ -562,6 +603,14 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Parameter Name="Plan_plan_id" Type="int" Mode="In" />
           <Parameter Name="Contrato_id_cont" Type="int" Mode="In" />
         </Function>
+        <Function Name="CREATE_PLAN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Tipo_plan" Type="varchar" Mode="In" />
+          <Parameter Name="Valor_plan" Type="numeric" Mode="In" />
+          <Parameter Name="Valor_ExtraChecklist" Type="int" Mode="In" />
+          <Parameter Name="Valor_ExtraAsesoria" Type="int" Mode="In" />
+          <Parameter Name="Valor_ExtraCapacitaciones" Type="int" Mode="In" />
+          <Parameter Name="Valor_ExtraInforme" Type="int" Mode="In" />
+        </Function>
         <Function Name="CREATE_PROFESIONAL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Rut_prof" Type="varchar" Mode="In" />
           <Parameter Name="Nombre_prof" Type="varchar" Mode="In" />
@@ -573,14 +622,26 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Parameter Name="Telefono" Type="varchar" Mode="In" />
           <Parameter Name="Direccion" Type="varchar" Mode="In" />
         </Function>
-        <Function Name="CREATE_ROL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id_rol" Type="int" Mode="In" />
-          <Parameter Name="descripcion" Type="varchar" Mode="In" />
+        <Function Name="CREATE_REPORTE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nombre_reporte" Type="varchar" Mode="In" />
+          <Parameter Name="Fecha_reporte" Type="date" Mode="In" />
+          <Parameter Name="ArchivoReporte" Type="varbinary(max)" Mode="In" />
+          <Parameter Name="Extension" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="CREATE_SOLICITUD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nombre_solicitud" Type="varchar" Mode="In" />
+          <Parameter Name="Razon_soli" Type="varchar" Mode="In" />
+          <Parameter Name="Profesional_id_prof" Type="int" Mode="In" />
+          <Parameter Name="Gerente_id_gerente" Type="int" Mode="In" />
+          <Parameter Name="Descripcion" Type="varchar" Mode="In" />
+          <Parameter Name="Fecha_CreacionSolicitud" Type="date" Mode="In" />
+          <Parameter Name="Hora_CreacionSolicitud" Type="datetime" Mode="In" />
+          <Parameter Name="Estado_solicitud" Type="varchar" Mode="In" />
         </Function>
         <Function Name="CREATE_USUARIO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="usuario" Type="varchar" Mode="In" />
           <Parameter Name="clave" Type="varchar" Mode="In" />
-          <Parameter Name="id_rol" Type="int" Mode="In" />
+          <Parameter Name="idrol" Type="int" Mode="In" />
           <Parameter Name="Fk_profesional" Type="int" Mode="In" />
           <Parameter Name="FK_cliente" Type="int" Mode="In" />
           <Parameter Name="FK_administrador" Type="int" Mode="In" />
@@ -630,6 +691,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
         <EntityContainer Name="BD_NMAModelStoreContainer">
           <EntitySet Name="Actividad" EntityType="Self.Actividad" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Administrador" EntityType="Self.Administrador" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Alerta" EntityType="Self.Alerta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Checklist" EntityType="Self.Checklist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comprobantes" EntityType="Self.Comprobantes" Schema="dbo" store:Type="Tables" />
@@ -663,14 +725,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
     [Act_de_mejora].[Estado_actividad] AS [Estado_actividad], 
     [Act_de_mejora].[Estado_asignacion] AS [Estado_asignacion]
     FROM [dbo].[Act_de_mejora] AS [Act_de_mejora]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Alerta" EntityType="Self.Alerta" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Alerta].[Motivo_alerta] AS [Motivo_alerta], 
-    [Alerta].[Gerente_id_emp] AS [Gerente_id_emp], 
-    [Alerta].[Cliente_id_emp] AS [Cliente_id_emp], 
-    [Alerta].[Actividad_id_act] AS [Actividad_id_act]
-    FROM [dbo].[Alerta] AS [Alerta]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Asesoria" EntityType="Self.Asesoria" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -709,6 +763,10 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
     [Visita].[Test] AS [Test]
     FROM [dbo].[Visita] AS [Visita]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_Accidente_Alerta" Association="Self.FK_Accidente_Alerta">
+            <End Role="Alerta" EntitySet="Alerta" />
+            <End Role="Accidente" EntitySet="Accidente" />
+          </AssociationSet>
           <AssociationSet Name="FK_Act_de_mejora_Actividad" Association="Self.FK_Act_de_mejora_Actividad">
             <End Role="Actividad" EntitySet="Actividad" />
             <End Role="Act_de_mejora" EntitySet="Act_de_mejora" />
@@ -721,8 +779,8 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <End Role="Profesional" EntitySet="Profesional" />
             <End Role="Actividad" EntitySet="Actividad" />
           </AssociationSet>
-          <AssociationSet Name="FK_Alerta_Actividad" Association="Self.FK_Alerta_Actividad">
-            <End Role="Actividad" EntitySet="Actividad" />
+          <AssociationSet Name="FK_Alerta_Cliente" Association="Self.FK_Alerta_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
             <End Role="Alerta" EntitySet="Alerta" />
           </AssociationSet>
           <AssociationSet Name="FK_Asesoria_Actividad" Association="Self.FK_Asesoria_Actividad">
@@ -744,6 +802,10 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <AssociationSet Name="FK_Gerente_Cliente1" Association="Self.FK_Gerente_Cliente1">
             <End Role="Cliente" EntitySet="Cliente" />
             <End Role="Gerente" EntitySet="Gerente" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pago_Comprobantes" Association="Self.FK_Pago_Comprobantes">
+            <End Role="Comprobantes" EntitySet="Comprobantes" />
+            <End Role="Pago" EntitySet="Pago" />
           </AssociationSet>
           <AssociationSet Name="FK_Pago_Contrato" Association="Self.FK_Pago_Contrato">
             <End Role="Contrato" EntitySet="Contrato" />
@@ -794,7 +856,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="id_act" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Fecha_act" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Hora_act" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Contador" Type="Int32" />
+          <Property Name="Contador" Type="Int32" Nullable="false" />
           <Property Name="Prof_id_profe" Type="Int32" Nullable="false" />
           <Property Name="Cliente_id_emp" Type="Int32" Nullable="false" />
           <Property Name="Tipo_actividad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
@@ -803,7 +865,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <NavigationProperty Name="Act_de_mejora" Relationship="Self.FK_Act_de_mejora_Actividad" FromRole="Actividad" ToRole="Act_de_mejora" />
           <NavigationProperty Name="Cliente" Relationship="Self.FK_Actividad_Cliente1" FromRole="Actividad" ToRole="Cliente" />
           <NavigationProperty Name="Profesional" Relationship="Self.FK_Actividad_Profesional" FromRole="Actividad" ToRole="Profesional" />
-          <NavigationProperty Name="Alerta" Relationship="Self.FK_Alerta_Actividad" FromRole="Actividad" ToRole="Alerta" />
           <NavigationProperty Name="Asesoria" Relationship="Self.FK_Asesoria_Actividad" FromRole="Actividad" ToRole="Asesoria" />
           <NavigationProperty Name="Capacitacion" Relationship="Self.FK_Capacitacion_Actividad" FromRole="Actividad" ToRole="Capacitacion" />
           <NavigationProperty Name="Visita" Relationship="Self.FK_Visita_Actividad" FromRole="Actividad" ToRole="Visita" />
@@ -815,6 +876,18 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="id_adm" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Nombre_adm" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Usuarios_Administrador" FromRole="Administrador" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Alerta">
+          <Key>
+            <PropertyRef Name="id_alerta" />
+          </Key>
+          <Property Name="id_alerta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Motivo_alerta" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Registro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Gerente_id_emp" Type="Int32" Nullable="false" />
+          <Property Name="Cliente_id_emp" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Accidente" Relationship="Self.FK_Accidente_Alerta" FromRole="Alerta" ToRole="Accidente" />
+          <NavigationProperty Name="Cliente" Relationship="Self.FK_Alerta_Cliente" FromRole="Alerta" ToRole="Cliente" />
         </EntityType>
         <EntityType Name="Checklist">
           <Key>
@@ -837,6 +910,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Profesional_id_prof" Type="Int32" Nullable="false" />
           <Property Name="Fono_cliente" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Actividad" Relationship="Self.FK_Actividad_Cliente1" FromRole="Cliente" ToRole="Actividad" />
+          <NavigationProperty Name="Alerta" Relationship="Self.FK_Alerta_Cliente" FromRole="Cliente" ToRole="Alerta" />
           <NavigationProperty Name="Profesional" Relationship="Self.FK_Cliente_Profesional" FromRole="Cliente" ToRole="Profesional" />
           <NavigationProperty Name="Gerente" Relationship="Self.FK_Gerente_Cliente1" FromRole="Cliente" ToRole="Gerente" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Usuarios_Cliente" FromRole="Cliente" ToRole="Usuarios" />
@@ -849,6 +923,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Archivo" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <Property Name="Extension" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Nombre_comprobante" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Pago" Relationship="Self.FK_Pago_Comprobantes" FromRole="Comprobantes" ToRole="Pago" />
         </EntityType>
         <EntityType Name="Contrato">
           <Key>
@@ -888,6 +963,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Comprobante_id_co" Type="Int32" />
           <Property Name="Plan_id_plan" Type="Int32" />
           <Property Name="Contrato_id_cont" Type="Int32" />
+          <NavigationProperty Name="Comprobantes" Relationship="Self.FK_Pago_Comprobantes" FromRole="Pago" ToRole="Comprobantes" />
           <NavigationProperty Name="Contrato" Relationship="Self.FK_Pago_Contrato" FromRole="Pago" ToRole="Contrato" />
           <NavigationProperty Name="Plan" Relationship="Self.FK_Pago_Plan" FromRole="Pago" ToRole="Plan" />
         </EntityType>
@@ -995,6 +1071,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Gravedad_acc" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Alerta_id_alerta" Type="Int32" Nullable="false" />
           <Property Name="Profesional_id_prof" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Alerta" Relationship="Self.FK_Accidente_Alerta" FromRole="Accidente" ToRole="Alerta" />
         </EntityType>
         <EntityType Name="Act_de_mejora">
           <Key>
@@ -1011,19 +1088,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Name="Estado_actividad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Estado_asignacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Actividad" Relationship="Self.FK_Act_de_mejora_Actividad" FromRole="Act_de_mejora" ToRole="Actividad" />
-        </EntityType>
-        <EntityType Name="Alerta">
-          <Key>
-            <PropertyRef Name="Motivo_alerta" />
-            <PropertyRef Name="Gerente_id_emp" />
-            <PropertyRef Name="Cliente_id_emp" />
-            <PropertyRef Name="Actividad_id_act" />
-          </Key>
-          <Property Name="Motivo_alerta" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Gerente_id_emp" Type="Int32" Nullable="false" />
-          <Property Name="Cliente_id_emp" Type="Int32" Nullable="false" />
-          <Property Name="Actividad_id_act" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Actividad" Relationship="Self.FK_Alerta_Actividad" FromRole="Alerta" ToRole="Actividad" />
         </EntityType>
         <EntityType Name="Asesoria">
           <Key>
@@ -1116,18 +1180,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Alerta_Actividad">
-          <End Role="Actividad" Type="Self.Actividad" Multiplicity="1" />
-          <End Role="Alerta" Type="Self.Alerta" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Actividad">
-              <PropertyRef Name="id_act" />
-            </Principal>
-            <Dependent Role="Alerta">
-              <PropertyRef Name="Actividad_id_act" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Asesoria_Actividad">
           <End Role="Actividad" Type="Self.Actividad" Multiplicity="1" />
           <End Role="Asesoria" Type="Self.Asesoria" Multiplicity="*" />
@@ -1176,6 +1228,30 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Accidente_Alerta">
+          <End Role="Alerta" Type="Self.Alerta" Multiplicity="1" />
+          <End Role="Accidente" Type="Self.Accidente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Alerta">
+              <PropertyRef Name="id_alerta" />
+            </Principal>
+            <Dependent Role="Accidente">
+              <PropertyRef Name="Alerta_id_alerta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alerta_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="1" />
+          <End Role="Alerta" Type="Self.Alerta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="id_emp" />
+            </Principal>
+            <Dependent Role="Alerta">
+              <PropertyRef Name="Cliente_id_emp" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Visita_Checklist">
           <End Role="Checklist" Type="Self.Checklist" Multiplicity="0..1" />
           <End Role="Visita" Type="Self.Visita" Multiplicity="*" />
@@ -1221,6 +1297,18 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             </Principal>
             <Dependent Role="Usuarios">
               <PropertyRef Name="Cliente_id_emp" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pago_Comprobantes">
+          <End Role="Comprobantes" Type="Self.Comprobantes" Multiplicity="0..1" />
+          <End Role="Pago" Type="Self.Pago" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comprobantes">
+              <PropertyRef Name="id_comprobante" />
+            </Principal>
+            <Dependent Role="Pago">
+              <PropertyRef Name="Comprobante_id_co" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1299,6 +1387,7 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
         <EntityContainer Name="BD_NMAEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Actividad" EntityType="Self.Actividad" />
           <EntitySet Name="Administrador" EntityType="Self.Administrador" />
+          <EntitySet Name="Alerta" EntityType="Self.Alerta" />
           <EntitySet Name="Checklist" EntityType="Self.Checklist" />
           <EntitySet Name="Cliente" EntityType="Self.Cliente" />
           <EntitySet Name="Comprobantes" EntityType="Self.Comprobantes" />
@@ -1314,7 +1403,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
           <EntitySet Name="Accidente" EntityType="Self.Accidente" />
           <EntitySet Name="Act_de_mejora" EntityType="Self.Act_de_mejora" />
-          <EntitySet Name="Alerta" EntityType="Self.Alerta" />
           <EntitySet Name="Asesoria" EntityType="Self.Asesoria" />
           <EntitySet Name="Capacitacion" EntityType="Self.Capacitacion" />
           <EntitySet Name="ERROR_LOG" EntityType="Self.ERROR_LOG" />
@@ -1330,10 +1418,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <AssociationSet Name="FK_Actividad_Profesional" Association="Self.FK_Actividad_Profesional">
             <End Role="Profesional" EntitySet="Profesional" />
             <End Role="Actividad" EntitySet="Actividad" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Alerta_Actividad" Association="Self.FK_Alerta_Actividad">
-            <End Role="Actividad" EntitySet="Actividad" />
-            <End Role="Alerta" EntitySet="Alerta" />
           </AssociationSet>
           <AssociationSet Name="FK_Asesoria_Actividad" Association="Self.FK_Asesoria_Actividad">
             <End Role="Actividad" EntitySet="Actividad" />
@@ -1351,6 +1435,14 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <End Role="Administrador" EntitySet="Administrador" />
             <End Role="Usuarios" EntitySet="Usuarios" />
           </AssociationSet>
+          <AssociationSet Name="FK_Accidente_Alerta" Association="Self.FK_Accidente_Alerta">
+            <End Role="Alerta" EntitySet="Alerta" />
+            <End Role="Accidente" EntitySet="Accidente" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alerta_Cliente" Association="Self.FK_Alerta_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Alerta" EntitySet="Alerta" />
+          </AssociationSet>
           <AssociationSet Name="FK_Visita_Checklist" Association="Self.FK_Visita_Checklist">
             <End Role="Checklist" EntitySet="Checklist" />
             <End Role="Visita" EntitySet="Visita" />
@@ -1366,6 +1458,10 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <AssociationSet Name="FK_Usuarios_Cliente" Association="Self.FK_Usuarios_Cliente">
             <End Role="Cliente" EntitySet="Cliente" />
             <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pago_Comprobantes" Association="Self.FK_Pago_Comprobantes">
+            <End Role="Comprobantes" EntitySet="Comprobantes" />
+            <End Role="Pago" EntitySet="Pago" />
           </AssociationSet>
           <AssociationSet Name="FK_Contrato_Gerente" Association="Self.FK_Contrato_Gerente">
             <End Role="Gerente" EntitySet="Gerente" />
@@ -1391,6 +1487,13 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <End Role="Rol" EntitySet="Rol" />
             <End Role="Usuarios" EntitySet="Usuarios" />
           </AssociationSet>
+          <FunctionImport Name="CREATE_ACCIDENTE" ReturnType="Collection(BD_NMAModel.CREATE_ACCIDENTE_Result)">
+            <Parameter Name="Tipo_acc" Mode="In" Type="String" />
+            <Parameter Name="Descripcion_acc" Mode="In" Type="String" />
+            <Parameter Name="Gravedad_acc" Mode="In" Type="String" />
+            <Parameter Name="Alerta_id_alerta" Mode="In" Type="Int32" />
+            <Parameter Name="Profesional_id_prof" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="CREATE_ACT_DE_MEJORA" ReturnType="Collection(BD_NMAModel.CREATE_ACT_DE_MEJORA_Result)">
             <Parameter Name="Nombre_act_mejora" Mode="In" Type="String" />
             <Parameter Name="Descripcion_act_mejora" Mode="In" Type="String" />
@@ -1410,6 +1513,15 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <Parameter Name="Tipo_actividad" Mode="In" Type="String" />
             <Parameter Name="Estado" Mode="In" Type="Int32" />
             <Parameter Name="Retraso" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CREATE_ADMINISTRADOR" ReturnType="Collection(BD_NMAModel.CREATE_ADMINISTRADOR_Result)">
+            <Parameter Name="Nombre_adm" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="CREATE_ALERTA" ReturnType="Collection(BD_NMAModel.CREATE_ALERTA_Result)">
+            <Parameter Name="Motivo_alerta" Mode="In" Type="String" />
+            <Parameter Name="Registro" Mode="In" Type="String" />
+            <Parameter Name="Gerente_id_emp" Mode="In" Type="Int32" />
+            <Parameter Name="AlertaCliente_id_emp" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="CREATE_ASESORIA" ReturnType="Collection(BD_NMAModel.CREATE_ASESORIA_Result)">
             <Parameter Name="Razon_ases" Mode="In" Type="String" />
@@ -1440,6 +1552,11 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <Parameter Name="ClienteProfesional_id_prof" Mode="In" Type="Int32" />
             <Parameter Name="Fono_cliente" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="CREATE_COMPROBANTES" ReturnType="Collection(BD_NMAModel.CREATE_COMPROBANTES_Result)">
+            <Parameter Name="Archivo" Mode="In" Type="Binary" />
+            <Parameter Name="Extension" Mode="In" Type="String" />
+            <Parameter Name="Nombre_comprobante" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="CREATE_CONTRATO" ReturnType="Collection(BD_NMAModel.CREATE_CONTRATO_Result)">
             <Parameter Name="Vencimiento_cont" Mode="In" Type="DateTime" />
             <Parameter Name="Archivo_pdf" Mode="In" Type="Binary" />
@@ -1461,6 +1578,14 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <Parameter Name="Plan_plan_id" Mode="In" Type="Int32" />
             <Parameter Name="Contrato_id_cont" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="CREATE_PLAN" ReturnType="Collection(BD_NMAModel.CREATE_PLAN_Result)">
+            <Parameter Name="Tipo_plan" Mode="In" Type="String" />
+            <Parameter Name="Valor_plan" Mode="In" Type="Decimal" />
+            <Parameter Name="Valor_ExtraChecklist" Mode="In" Type="Int32" />
+            <Parameter Name="Valor_ExtraAsesoria" Mode="In" Type="Int32" />
+            <Parameter Name="Valor_ExtraCapacitaciones" Mode="In" Type="Int32" />
+            <Parameter Name="Valor_ExtraInforme" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="CREATE_PROFESIONAL" ReturnType="Collection(BD_NMAModel.CREATE_PROFESIONAL_Result)">
             <Parameter Name="Rut_prof" Mode="In" Type="String" />
             <Parameter Name="Nombre_prof" Mode="In" Type="String" />
@@ -1472,14 +1597,26 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
             <Parameter Name="Telefono" Mode="In" Type="String" />
             <Parameter Name="Direccion" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="CREATE_ROL" ReturnType="Collection(BD_NMAModel.CREATE_ROL_Result)">
-            <Parameter Name="id_rol" Mode="In" Type="Int32" />
-            <Parameter Name="descripcion" Mode="In" Type="String" />
+          <FunctionImport Name="CREATE_REPORTE" ReturnType="Collection(BD_NMAModel.CREATE_REPORTE_Result)">
+            <Parameter Name="Nombre_reporte" Mode="In" Type="String" />
+            <Parameter Name="Fecha_reporte" Mode="In" Type="DateTime" />
+            <Parameter Name="ArchivoReporte" Mode="In" Type="Binary" />
+            <Parameter Name="Extension" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="CREATE_SOLICITUD" ReturnType="Collection(BD_NMAModel.CREATE_SOLICITUD_Result)">
+            <Parameter Name="Nombre_solicitud" Mode="In" Type="String" />
+            <Parameter Name="Razon_soli" Mode="In" Type="String" />
+            <Parameter Name="Profesional_id_prof" Mode="In" Type="Int32" />
+            <Parameter Name="Gerente_id_gerente" Mode="In" Type="Int32" />
+            <Parameter Name="Descripcion" Mode="In" Type="String" />
+            <Parameter Name="Fecha_CreacionSolicitud" Mode="In" Type="DateTime" />
+            <Parameter Name="Hora_CreacionSolicitud" Mode="In" Type="DateTime" />
+            <Parameter Name="Estado_solicitud" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="CREATE_USUARIO" ReturnType="Collection(BD_NMAModel.CREATE_USUARIO_Result)">
             <Parameter Name="usuario" Mode="In" Type="String" />
             <Parameter Name="clave" Mode="In" Type="String" />
-            <Parameter Name="id_rol" Mode="In" Type="Int32" />
+            <Parameter Name="idrol" Mode="In" Type="Int32" />
             <Parameter Name="Fk_profesional" Mode="In" Type="Int32" />
             <Parameter Name="FK_cliente" Mode="In" Type="Int32" />
             <Parameter Name="FK_administrador" Mode="In" Type="Int32" />
@@ -1526,6 +1663,12 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
+        <ComplexType Name="CREATE_ACCIDENTE_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
         <ComplexType Name="CREATE_ACT_DE_MEJORA_Result">
           <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
           <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
@@ -1533,6 +1676,18 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="CREATE_ACTIVIDAD_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="CREATE_ADMINISTRADOR_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="CREATE_ALERTA_Result">
           <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
           <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
           <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
@@ -1562,6 +1717,12 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
           <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <ComplexType Name="CREATE_COMPROBANTES_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
         <ComplexType Name="CREATE_CONTRATO_Result">
           <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
           <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
@@ -1580,13 +1741,25 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
           <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <ComplexType Name="CREATE_PLAN_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
         <ComplexType Name="CREATE_PROFESIONAL_Result">
           <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
           <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
           <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
           <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
         </ComplexType>
-        <ComplexType Name="CREATE_ROL_Result">
+        <ComplexType Name="CREATE_REPORTE_Result">
+          <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
+          <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
+          <Property Type="String" Name="OBJECT_NAME" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="CREATE_SOLICITUD_Result">
           <Property Type="Int32" Name="RESPONSE_NUMBER" Nullable="true" />
           <Property Type="String" Name="RESPONSE_MESSAGE" Nullable="true" MaxLength="250" />
           <Property Type="String" Name="RESPONSE_DATA" Nullable="true" />
@@ -1647,6 +1820,17 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               <MappingFragment StoreEntitySet="Administrador">
                 <ScalarProperty Name="id_adm" ColumnName="id_adm" />
                 <ScalarProperty Name="Nombre_adm" ColumnName="Nombre_adm" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Alerta">
+            <EntityTypeMapping TypeName="BD_NMAModel.Alerta">
+              <MappingFragment StoreEntitySet="Alerta">
+                <ScalarProperty Name="id_alerta" ColumnName="id_alerta" />
+                <ScalarProperty Name="Motivo_alerta" ColumnName="Motivo_alerta" />
+                <ScalarProperty Name="Registro" ColumnName="Registro" />
+                <ScalarProperty Name="Gerente_id_emp" ColumnName="Gerente_id_emp" />
+                <ScalarProperty Name="Cliente_id_emp" ColumnName="Cliente_id_emp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1832,16 +2016,6 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Alerta">
-            <EntityTypeMapping TypeName="BD_NMAModel.Alerta">
-              <MappingFragment StoreEntitySet="Alerta">
-                <ScalarProperty Name="Motivo_alerta" ColumnName="Motivo_alerta" />
-                <ScalarProperty Name="Gerente_id_emp" ColumnName="Gerente_id_emp" />
-                <ScalarProperty Name="Cliente_id_emp" ColumnName="Cliente_id_emp" />
-                <ScalarProperty Name="Actividad_id_act" ColumnName="Actividad_id_act" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Asesoria">
             <EntityTypeMapping TypeName="BD_NMAModel.Asesoria">
               <MappingFragment StoreEntitySet="Asesoria">
@@ -1887,6 +2061,16 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_ACCIDENTE" FunctionName="BD_NMAModel.Store.CREATE_ACCIDENTE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ACCIDENTE_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CREATE_ACT_DE_MEJORA" FunctionName="BD_NMAModel.Store.CREATE_ACT_DE_MEJORA">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ACT_DE_MEJORA_Result">
@@ -1900,6 +2084,26 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
           <FunctionImportMapping FunctionImportName="CREATE_ACTIVIDAD" FunctionName="BD_NMAModel.Store.CREATE_ACTIVIDAD">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ACTIVIDAD_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_ADMINISTRADOR" FunctionName="BD_NMAModel.Store.CREATE_ADMINISTRADOR">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ADMINISTRADOR_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_ALERTA" FunctionName="BD_NMAModel.Store.CREATE_ALERTA">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ALERTA_Result">
                 <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
                 <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
                 <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
@@ -1947,6 +2151,16 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_COMPROBANTES" FunctionName="BD_NMAModel.Store.CREATE_COMPROBANTES">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_COMPROBANTES_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CREATE_CONTRATO" FunctionName="BD_NMAModel.Store.CREATE_CONTRATO">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_CONTRATO_Result">
@@ -1977,6 +2191,16 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_PLAN" FunctionName="BD_NMAModel.Store.CREATE_PLAN">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_PLAN_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CREATE_PROFESIONAL" FunctionName="BD_NMAModel.Store.CREATE_PROFESIONAL">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_PROFESIONAL_Result">
@@ -1987,9 +2211,19 @@ advertencia 6002: La tabla o vista 'BD_NMA.dbo.Visita' no tiene definida ninguna
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="CREATE_ROL" FunctionName="BD_NMAModel.Store.CREATE_ROL">
+          <FunctionImportMapping FunctionImportName="CREATE_REPORTE" FunctionName="BD_NMAModel.Store.CREATE_REPORTE">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_ROL_Result">
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_REPORTE_Result">
+                <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
+                <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
+                <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />
+                <ScalarProperty Name="OBJECT_NAME" ColumnName="OBJECT_NAME" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CREATE_SOLICITUD" FunctionName="BD_NMAModel.Store.CREATE_SOLICITUD">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BD_NMAModel.CREATE_SOLICITUD_Result">
                 <ScalarProperty Name="RESPONSE_NUMBER" ColumnName="RESPONSE_NUMBER" />
                 <ScalarProperty Name="RESPONSE_MESSAGE" ColumnName="RESPONSE_MESSAGE" />
                 <ScalarProperty Name="RESPONSE_DATA" ColumnName="RESPONSE_DATA" />

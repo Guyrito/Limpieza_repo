@@ -24,7 +24,7 @@
             <StackPanel DockPanel.Dock="Top"
                         Width="auto"
                         Height="40"
-                        Background="#4E16D1">
+                        Background="#4E16D1" MouseDown="StackPanel_MouseDown">
                 <Grid Height="auto">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>

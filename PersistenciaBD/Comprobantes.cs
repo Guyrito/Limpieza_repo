@@ -14,9 +14,18 @@ namespace PersistenciaBD
     
     public partial class Comprobantes
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Comprobantes()
+        {
+            this.Pago = new HashSet<Pago>();
+        }
+    
         public int id_comprobante { get; set; }
         public byte[] Archivo { get; set; }
         public string Extension { get; set; }
         public string Nombre_comprobante { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Pago> Pago { get; set; }
     }
 }

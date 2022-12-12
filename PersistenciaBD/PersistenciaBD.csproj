@@ -96,10 +96,19 @@
     <Compile Include="Contrato.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="CREATE_ACCIDENTE_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="CREATE_ACTIVIDAD_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
     <Compile Include="CREATE_ACT_DE_MEJORA_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CREATE_ADMINISTRADOR_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CREATE_ALERTA_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
     <Compile Include="CREATE_ASESORIA_Result.cs">
@@ -114,6 +123,9 @@
     <Compile Include="CREATE_CLIENTE_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="CREATE_COMPROBANTES_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="CREATE_CONTRATO_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
@@ -123,10 +135,16 @@
     <Compile Include="CREATE_PAGO_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="CREATE_PLAN_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="CREATE_PROFESIONAL_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
-    <Compile Include="CREATE_ROL_Result.cs">
+    <Compile Include="CREATE_REPORTE_Result.cs">
+      <DependentUpon>NMABD.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CREATE_SOLICITUD_Result.cs">
       <DependentUpon>NMABD.tt</DependentUpon>
     </Compile>
     <Compile Include="CREATE_USUARIO_Result.cs">
@@ -195,11 +213,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
     <EntityDeploy Include="NMABD.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>NMABD.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="App.Config" />
     <None Include="NMABD.edmx.diagram">
       <DependentUpon>NMABD.edmx</DependentUpon>
     </None>

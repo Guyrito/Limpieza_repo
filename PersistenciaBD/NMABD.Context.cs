@@ -29,6 +29,7 @@ namespace PersistenciaBD
     
         public virtual DbSet<Actividad> Actividad { get; set; }
         public virtual DbSet<Administrador> Administrador { get; set; }
+        public virtual DbSet<Alerta> Alerta { get; set; }
         public virtual DbSet<Checklist> Checklist { get; set; }
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Comprobantes> Comprobantes { get; set; }
@@ -44,11 +45,35 @@ namespace PersistenciaBD
         public virtual DbSet<Usuarios> Usuarios { get; set; }
         public virtual DbSet<Accidente> Accidente { get; set; }
         public virtual DbSet<Act_de_mejora> Act_de_mejora { get; set; }
-        public virtual DbSet<Alerta> Alerta { get; set; }
         public virtual DbSet<Asesoria> Asesoria { get; set; }
         public virtual DbSet<Capacitacion> Capacitacion { get; set; }
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<Visita> Visita { get; set; }
+    
+        public virtual ObjectResult<CREATE_ACCIDENTE_Result> CREATE_ACCIDENTE(string tipo_acc, string descripcion_acc, string gravedad_acc, Nullable<int> alerta_id_alerta, Nullable<int> profesional_id_prof)
+        {
+            var tipo_accParameter = tipo_acc != null ?
+                new ObjectParameter("Tipo_acc", tipo_acc) :
+                new ObjectParameter("Tipo_acc", typeof(string));
+    
+            var descripcion_accParameter = descripcion_acc != null ?
+                new ObjectParameter("Descripcion_acc", descripcion_acc) :
+                new ObjectParameter("Descripcion_acc", typeof(string));
+    
+            var gravedad_accParameter = gravedad_acc != null ?
+                new ObjectParameter("Gravedad_acc", gravedad_acc) :
+                new ObjectParameter("Gravedad_acc", typeof(string));
+    
+            var alerta_id_alertaParameter = alerta_id_alerta.HasValue ?
+                new ObjectParameter("Alerta_id_alerta", alerta_id_alerta) :
+                new ObjectParameter("Alerta_id_alerta", typeof(int));
+    
+            var profesional_id_profParameter = profesional_id_prof.HasValue ?
+                new ObjectParameter("Profesional_id_prof", profesional_id_prof) :
+                new ObjectParameter("Profesional_id_prof", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_ACCIDENTE_Result>("CREATE_ACCIDENTE", tipo_accParameter, descripcion_accParameter, gravedad_accParameter, alerta_id_alertaParameter, profesional_id_profParameter);
+        }
     
         public virtual ObjectResult<CREATE_ACT_DE_MEJORA_Result> CREATE_ACT_DE_MEJORA(string nombre_act_mejora, string descripcion_act_mejora, Nullable<int> actividad_id_act, string revision_profesional, Nullable<int> prof_emisor_id, Nullable<int> prof_remitente_id, string estado_actividad, string estado_asignacion)
         {
@@ -122,6 +147,36 @@ namespace PersistenciaBD
                 new ObjectParameter("Retraso", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_ACTIVIDAD_Result>("CREATE_ACTIVIDAD", fecha_actParameter, hora_actParameter, contadorParameter, prof_id_profeParameter, cliente_id_empParameter, tipo_actividadParameter, estadoParameter, retrasoParameter);
+        }
+    
+        public virtual ObjectResult<CREATE_ADMINISTRADOR_Result> CREATE_ADMINISTRADOR(string nombre_adm)
+        {
+            var nombre_admParameter = nombre_adm != null ?
+                new ObjectParameter("Nombre_adm", nombre_adm) :
+                new ObjectParameter("Nombre_adm", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_ADMINISTRADOR_Result>("CREATE_ADMINISTRADOR", nombre_admParameter);
+        }
+    
+        public virtual ObjectResult<CREATE_ALERTA_Result> CREATE_ALERTA(string motivo_alerta, string registro, Nullable<int> gerente_id_emp, Nullable<int> alertaCliente_id_emp)
+        {
+            var motivo_alertaParameter = motivo_alerta != null ?
+                new ObjectParameter("Motivo_alerta", motivo_alerta) :
+                new ObjectParameter("Motivo_alerta", typeof(string));
+    
+            var registroParameter = registro != null ?
+                new ObjectParameter("Registro", registro) :
+                new ObjectParameter("Registro", typeof(string));
+    
+            var gerente_id_empParameter = gerente_id_emp.HasValue ?
+                new ObjectParameter("Gerente_id_emp", gerente_id_emp) :
+                new ObjectParameter("Gerente_id_emp", typeof(int));
+    
+            var alertaCliente_id_empParameter = alertaCliente_id_emp.HasValue ?
+                new ObjectParameter("AlertaCliente_id_emp", alertaCliente_id_emp) :
+                new ObjectParameter("AlertaCliente_id_emp", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_ALERTA_Result>("CREATE_ALERTA", motivo_alertaParameter, registroParameter, gerente_id_empParameter, alertaCliente_id_empParameter);
         }
     
         public virtual ObjectResult<CREATE_ASESORIA_Result> CREATE_ASESORIA(string razon_ases, string estado_caso, string diligencia, string evento_ases, Nullable<int> solicitud_id_solicitud, Nullable<int> asesoriaActividad_id_act, Nullable<System.DateTime> fecha_incidente, string descripcion)
@@ -228,6 +283,23 @@ namespace PersistenciaBD
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_CLIENTE_Result>("CREATE_CLIENTE", rut_empParameter, nombre_empParameter, direccion_empParameter, clienteProfesional_id_profParameter, fono_clienteParameter);
         }
     
+        public virtual ObjectResult<CREATE_COMPROBANTES_Result> CREATE_COMPROBANTES(byte[] archivo, string extension, string nombre_comprobante)
+        {
+            var archivoParameter = archivo != null ?
+                new ObjectParameter("Archivo", archivo) :
+                new ObjectParameter("Archivo", typeof(byte[]));
+    
+            var extensionParameter = extension != null ?
+                new ObjectParameter("Extension", extension) :
+                new ObjectParameter("Extension", typeof(string));
+    
+            var nombre_comprobanteParameter = nombre_comprobante != null ?
+                new ObjectParameter("Nombre_comprobante", nombre_comprobante) :
+                new ObjectParameter("Nombre_comprobante", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_COMPROBANTES_Result>("CREATE_COMPROBANTES", archivoParameter, extensionParameter, nombre_comprobanteParameter);
+        }
+    
         public virtual ObjectResult<CREATE_CONTRATO_Result> CREATE_CONTRATO(Nullable<System.DateTime> vencimiento_cont, byte[] archivo_pdf, Nullable<int> gerente_id_gerente, string nombre_arch, Nullable<int> plan_id_plan)
         {
             var vencimiento_contParameter = vencimiento_cont.HasValue ?
@@ -303,6 +375,35 @@ namespace PersistenciaBD
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_PAGO_Result>("CREATE_PAGO", estado_pagoParameter, mes_pagoParameter, valor_extraParameter, total_a_pagarParameter, plan_plan_idParameter, contrato_id_contParameter);
         }
     
+        public virtual ObjectResult<CREATE_PLAN_Result> CREATE_PLAN(string tipo_plan, Nullable<decimal> valor_plan, Nullable<int> valor_ExtraChecklist, Nullable<int> valor_ExtraAsesoria, Nullable<int> valor_ExtraCapacitaciones, Nullable<int> valor_ExtraInforme)
+        {
+            var tipo_planParameter = tipo_plan != null ?
+                new ObjectParameter("Tipo_plan", tipo_plan) :
+                new ObjectParameter("Tipo_plan", typeof(string));
+    
+            var valor_planParameter = valor_plan.HasValue ?
+                new ObjectParameter("Valor_plan", valor_plan) :
+                new ObjectParameter("Valor_plan", typeof(decimal));
+    
+            var valor_ExtraChecklistParameter = valor_ExtraChecklist.HasValue ?
+                new ObjectParameter("Valor_ExtraChecklist", valor_ExtraChecklist) :
+                new ObjectParameter("Valor_ExtraChecklist", typeof(int));
+    
+            var valor_ExtraAsesoriaParameter = valor_ExtraAsesoria.HasValue ?
+                new ObjectParameter("Valor_ExtraAsesoria", valor_ExtraAsesoria) :
+                new ObjectParameter("Valor_ExtraAsesoria", typeof(int));
+    
+            var valor_ExtraCapacitacionesParameter = valor_ExtraCapacitaciones.HasValue ?
+                new ObjectParameter("Valor_ExtraCapacitaciones", valor_ExtraCapacitaciones) :
+                new ObjectParameter("Valor_ExtraCapacitaciones", typeof(int));
+    
+            var valor_ExtraInformeParameter = valor_ExtraInforme.HasValue ?
+                new ObjectParameter("Valor_ExtraInforme", valor_ExtraInforme) :
+                new ObjectParameter("Valor_ExtraInforme", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_PLAN_Result>("CREATE_PLAN", tipo_planParameter, valor_planParameter, valor_ExtraChecklistParameter, valor_ExtraAsesoriaParameter, valor_ExtraCapacitacionesParameter, valor_ExtraInformeParameter);
+        }
+    
         public virtual ObjectResult<CREATE_PROFESIONAL_Result> CREATE_PROFESIONAL(string rut_prof, string nombre_prof, string apellido_prof, Nullable<int> rendimiento_prof, string estado_prof, Nullable<System.DateTime> fecha_nacimiento_prof, string mail_prof, string telefono, string direccion)
         {
             var rut_profParameter = rut_prof != null ?
@@ -344,20 +445,65 @@ namespace PersistenciaBD
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_PROFESIONAL_Result>("CREATE_PROFESIONAL", rut_profParameter, nombre_profParameter, apellido_profParameter, rendimiento_profParameter, estado_profParameter, fecha_nacimiento_profParameter, mail_profParameter, telefonoParameter, direccionParameter);
         }
     
-        public virtual ObjectResult<CREATE_ROL_Result> CREATE_ROL(Nullable<int> id_rol, string descripcion)
+        public virtual ObjectResult<CREATE_REPORTE_Result> CREATE_REPORTE(string nombre_reporte, Nullable<System.DateTime> fecha_reporte, byte[] archivoReporte, string extension)
         {
-            var id_rolParameter = id_rol.HasValue ?
-                new ObjectParameter("id_rol", id_rol) :
-                new ObjectParameter("id_rol", typeof(int));
+            var nombre_reporteParameter = nombre_reporte != null ?
+                new ObjectParameter("Nombre_reporte", nombre_reporte) :
+                new ObjectParameter("Nombre_reporte", typeof(string));
     
-            var descripcionParameter = descripcion != null ?
-                new ObjectParameter("descripcion", descripcion) :
-                new ObjectParameter("descripcion", typeof(string));
+            var fecha_reporteParameter = fecha_reporte.HasValue ?
+                new ObjectParameter("Fecha_reporte", fecha_reporte) :
+                new ObjectParameter("Fecha_reporte", typeof(System.DateTime));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_ROL_Result>("CREATE_ROL", id_rolParameter, descripcionParameter);
+            var archivoReporteParameter = archivoReporte != null ?
+                new ObjectParameter("ArchivoReporte", archivoReporte) :
+                new ObjectParameter("ArchivoReporte", typeof(byte[]));
+    
+            var extensionParameter = extension != null ?
+                new ObjectParameter("Extension", extension) :
+                new ObjectParameter("Extension", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_REPORTE_Result>("CREATE_REPORTE", nombre_reporteParameter, fecha_reporteParameter, archivoReporteParameter, extensionParameter);
         }
     
-        public virtual ObjectResult<CREATE_USUARIO_Result> CREATE_USUARIO(string usuario, string clave, Nullable<int> id_rol, Nullable<int> fk_profesional, Nullable<int> fK_cliente, Nullable<int> fK_administrador)
+        public virtual ObjectResult<CREATE_SOLICITUD_Result> CREATE_SOLICITUD(string nombre_solicitud, string razon_soli, Nullable<int> profesional_id_prof, Nullable<int> gerente_id_gerente, string descripcion, Nullable<System.DateTime> fecha_CreacionSolicitud, Nullable<System.DateTime> hora_CreacionSolicitud, string estado_solicitud)
+        {
+            var nombre_solicitudParameter = nombre_solicitud != null ?
+                new ObjectParameter("Nombre_solicitud", nombre_solicitud) :
+                new ObjectParameter("Nombre_solicitud", typeof(string));
+    
+            var razon_soliParameter = razon_soli != null ?
+                new ObjectParameter("Razon_soli", razon_soli) :
+                new ObjectParameter("Razon_soli", typeof(string));
+    
+            var profesional_id_profParameter = profesional_id_prof.HasValue ?
+                new ObjectParameter("Profesional_id_prof", profesional_id_prof) :
+                new ObjectParameter("Profesional_id_prof", typeof(int));
+    
+            var gerente_id_gerenteParameter = gerente_id_gerente.HasValue ?
+                new ObjectParameter("Gerente_id_gerente", gerente_id_gerente) :
+                new ObjectParameter("Gerente_id_gerente", typeof(int));
+    
+            var descripcionParameter = descripcion != null ?
+                new ObjectParameter("Descripcion", descripcion) :
+                new ObjectParameter("Descripcion", typeof(string));
+    
+            var fecha_CreacionSolicitudParameter = fecha_CreacionSolicitud.HasValue ?
+                new ObjectParameter("Fecha_CreacionSolicitud", fecha_CreacionSolicitud) :
+                new ObjectParameter("Fecha_CreacionSolicitud", typeof(System.DateTime));
+    
+            var hora_CreacionSolicitudParameter = hora_CreacionSolicitud.HasValue ?
+                new ObjectParameter("Hora_CreacionSolicitud", hora_CreacionSolicitud) :
+                new ObjectParameter("Hora_CreacionSolicitud", typeof(System.DateTime));
+    
+            var estado_solicitudParameter = estado_solicitud != null ?
+                new ObjectParameter("Estado_solicitud", estado_solicitud) :
+                new ObjectParameter("Estado_solicitud", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_SOLICITUD_Result>("CREATE_SOLICITUD", nombre_solicitudParameter, razon_soliParameter, profesional_id_profParameter, gerente_id_gerenteParameter, descripcionParameter, fecha_CreacionSolicitudParameter, hora_CreacionSolicitudParameter, estado_solicitudParameter);
+        }
+    
+        public virtual ObjectResult<CREATE_USUARIO_Result> CREATE_USUARIO(string usuario, string clave, Nullable<int> idrol, Nullable<int> fk_profesional, Nullable<int> fK_cliente, Nullable<int> fK_administrador)
         {
             var usuarioParameter = usuario != null ?
                 new ObjectParameter("usuario", usuario) :
@@ -367,9 +513,9 @@ namespace PersistenciaBD
                 new ObjectParameter("clave", clave) :
                 new ObjectParameter("clave", typeof(string));
     
-            var id_rolParameter = id_rol.HasValue ?
-                new ObjectParameter("id_rol", id_rol) :
-                new ObjectParameter("id_rol", typeof(int));
+            var idrolParameter = idrol.HasValue ?
+                new ObjectParameter("idrol", idrol) :
+                new ObjectParameter("idrol", typeof(int));
     
             var fk_profesionalParameter = fk_profesional.HasValue ?
                 new ObjectParameter("Fk_profesional", fk_profesional) :
@@ -383,7 +529,7 @@ namespace PersistenciaBD
                 new ObjectParameter("FK_administrador", fK_administrador) :
                 new ObjectParameter("FK_administrador", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_USUARIO_Result>("CREATE_USUARIO", usuarioParameter, claveParameter, id_rolParameter, fk_profesionalParameter, fK_clienteParameter, fK_administradorParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<CREATE_USUARIO_Result>("CREATE_USUARIO", usuarioParameter, claveParameter, idrolParameter, fk_profesionalParameter, fK_clienteParameter, fK_administradorParameter);
         }
     
         public virtual ObjectResult<CREATE_VISITA_Result> CREATE_VISITA(Nullable<int> checklist_id_check, Nullable<int> visitaActividad_id_act, string test)

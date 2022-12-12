@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="Vistas.VentanaChecklist"
+﻿<mah:MetroWindow x:Class="Vistas.ReporteChecklist"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -49,59 +49,56 @@
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="lblCliente"
-                           Margin="0,12,730,92"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"
-                           Content="Cliente:"
-                           FontSize="12"/>
-                    <Label x:Name="lblNombreCliente" 
+                    <Label x:Name="LblNombreReporte"
+                           Width="100"
                            Height="25"
-                           Margin="78,12,654,92"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"
-                           FontSize="12"/>
-                    <Label x:Name="lblHoraVisita"
-                           Width="150" 
-                           FontSize="12"
+                           Content="Nombre Reporte" Margin="10,10,696,94"/>
+                    <TextBox x:Name="TxtBoxNombreReporte"
+                             Height="25" Margin="115,9,515,94"
+                             Background="#F5F5F5"
+                             BorderBrush="#E0E0E0"
+                             BorderThickness="0,0,0,2"
+                             Foreground="Black"
+                             MaxLength="50"/>
+                    <Label x:Name="LblFechaReporte"
+                           Width="100"
                            Height="25"
-                           Margin="3,72,653,32"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"/>
-                    <Label x:Name="lblTipoAct" 
-                           Height="25"
-                           Margin="3,42,733,62"
-                           FontSize="12"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"/>
-                    <Label x:Name="lblFechaVisita" 
-                           Margin="78,42,653,62"
-                           Height="25"
-                           FontSize="12"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"/>
-                    <Label x:Name="lblVecesModificado" 
-                           Margin="653,18,49,82"
-                           Content="Veces modificado:"
-                           VerticalContentAlignment="Center"
+                           Content="Fecha Reporte" Margin="10,77,696,27"
                            HorizontalContentAlignment="Right"/>
-                    <Label x:Name="lblContador" 
-                           Margin="762,18,24,79"
-                           VerticalContentAlignment="Center"
-                           HorizontalContentAlignment="Center"/>
-
-                    <ScrollViewer x:Name="scrlViewerChecklist" Margin="158,12,158,32" 
-                                  Grid.RowSpan="3"
-                                  Background="#F5F5F5">
-                        <StackPanel x:Name="StackPanelChecklist"></StackPanel>
-                    </ScrollViewer>
-                    <mah:Tile x:Name="TileCapturarReporte"  Height="40"
+                    <DatePicker x:Name="DatePickerFechaReporte"
+                                Width="176"
+                                Height="25" Margin="115,77,515,26"
+                                Background="#F5F5F5"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="0,0,0,2"
+                                Foreground="Black"
+                                SelectedDateFormat="Short"
+                                IsEnabled="False"/>
+                    <Label x:Name="LblImagen"
+                           Content="Captura reporte" Margin="422,4,122,94"
+                           HorizontalContentAlignment="Center"
+                           FontSize="14"/>
+                    <Image x:Name="imgReporte" 
+                           Margin="323,44,22,5" 
+                           Grid.RowSpan="2"/>
+                    <TextBox x:Name="TxtboxReporte"  
+                             Height="100"
+                             Width="550" 
+                             Margin="128,10,128,19" 
+                             Grid.Row="2"
+                             Background="#F5F5F5"
+                             mah:TextBoxHelper.Watermark="Ingresar Reporte"
+                             FontSize="12"
+                             TextAlignment="Justify"
+                             BorderThickness="0,0,0,0"
+                             TextWrapping="Wrap"></TextBox>
+                    <mah:Tile x:Name="TileGuardar"  Height="40"
                               Width="100"
                               HorizontalAlignment="Left" Margin="698,20,0,69"
                               Background="White"
                               BorderBrush="#FF4E16D1"
                               BorderThickness="1"
-                              Content="Capturar checklist"
+                              Content="GUARDAR"
                               Foreground="#FF4E16D1" Grid.Row="2" Click="TileGuardar_Click"/>
                     <mah:Tile x:Name="TileAtras"
                               Height="20"
@@ -114,5 +111,6 @@
                 </Grid>
             </DockPanel>
         </Grid>
+
     </Border>
 </mah:MetroWindow>

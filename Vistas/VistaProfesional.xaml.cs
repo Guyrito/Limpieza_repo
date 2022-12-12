@@ -448,6 +448,7 @@ namespace Vistas
                     }
                 }
                 VentanaChecklist ventanaChecklist = new();
+                ventanaChecklist.idChecklist = (int)idChecklist;
                 ventanaChecklist.lblNombreCliente.Content = serviceCliente.GetEntity(idClienteSeleccionado).Nombre_emp;
                 ventanaChecklist.lblTipoAct.Content = serviceActividad.GetEntity(idActividadSeleccionada).Tipo_actividad;
                 ventanaChecklist.lblFechaVisita.Content = serviceActividad.GetEntity(idActividadSeleccionada).Fecha_act.ToString("dd/MM/yyyy");
@@ -456,6 +457,12 @@ namespace Vistas
                 ventanaChecklist.AgregarCheckbox((int)idChecklist);
                 ventanaChecklist.ShowDialog();
             }
+        }
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
     }
 }

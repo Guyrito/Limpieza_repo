@@ -18,6 +18,7 @@ namespace PersistenciaBD
         public Cliente()
         {
             this.Actividad = new HashSet<Actividad>();
+            this.Alerta = new HashSet<Alerta>();
             this.Gerente = new HashSet<Gerente>();
             this.Usuarios = new HashSet<Usuarios>();
         }
@@ -31,6 +32,8 @@ namespace PersistenciaBD
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Actividad> Actividad { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Alerta> Alerta { get; set; }
         public virtual Profesional Profesional { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Gerente> Gerente { get; set; }

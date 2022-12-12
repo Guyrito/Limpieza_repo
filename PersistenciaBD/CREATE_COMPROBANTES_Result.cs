@@ -10,16 +10,12 @@
 namespace PersistenciaBD
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Accidente
+    public partial class CREATE_COMPROBANTES_Result
     {
-        public string Tipo_acc { get; set; }
-        public string Descripcion_acc { get; set; }
-        public string Gravedad_acc { get; set; }
-        public int Alerta_id_alerta { get; set; }
-        public int Profesional_id_prof { get; set; }
-    
-        public virtual Alerta Alerta { get; set; }
+        public Nullable<int> RESPONSE_NUMBER { get; set; }
+        public string RESPONSE_MESSAGE { get; set; }
+        public string RESPONSE_DATA { get; set; }
+        public string OBJECT_NAME { get; set; }
     }
 }

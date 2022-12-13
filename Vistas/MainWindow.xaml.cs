@@ -32,9 +32,6 @@ namespace Vistas
         {
             InitializeComponent();
         }
-
-       
-
         ServiceUsuarios su = new ServiceUsuarios();
 
         public static int IdProfesional { get; set; }

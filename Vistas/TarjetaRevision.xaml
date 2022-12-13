@@ -161,6 +161,7 @@
                              TextAlignment="Center"
                              VerticalContentAlignment="Top"
                              HorizontalContentAlignment="Left"
+                             TextWrapping="Wrap"
                              FontSize="12"
                              IsEnabled="False"
                              FontWeight="DemiBold" Margin="110,31,110,10"/>
@@ -174,18 +175,19 @@
                               BorderThickness="1"
                               Content="TOMAR" Click="TileTomar_Click" RenderTransformOrigin="0.4,-0.436"></mah:Tile>
                     <TextBox x:Name="txtBoxAsignacion"
-                        Width="610"
-                        Background="#F5F5F5"
-                        BorderBrush="#E0E0E0"
-                        BorderThickness="0,0,0,2"
-                        mah:TextBoxHelper.Watermark="Profesional Asignado"
-                        Text="{Binding DisplayProfAsignado, TargetNullValue=''}"
-                        TextAlignment="Center"
-                        VerticalContentAlignment="Top"
-                        HorizontalContentAlignment="Left"
-                        FontSize="12"
-                        IsEnabled="False"
-                        FontWeight="DemiBold" Margin="110,0,110,138"/>
+                             Width="610"
+                             Background="#F5F5F5"
+                             BorderBrush="#E0E0E0"
+                             TextWrapping="Wrap"
+                             BorderThickness="0,0,0,2"
+                             mah:TextBoxHelper.Watermark="Profesional Asignado"
+                             Text="{Binding DisplayProfAsignado, TargetNullValue=''}"
+                             TextAlignment="Center"
+                             VerticalContentAlignment="Top"
+                             HorizontalContentAlignment="Left"
+                             FontSize="12"
+                             IsEnabled="False"
+                             FontWeight="DemiBold" Margin="110,0,110,138"/>
                 </Grid>
             </DockPanel>
             <DockPanel x:Name="dockPanelInferior"  
@@ -201,7 +203,9 @@
                              Foreground="Gray"
                              VerticalContentAlignment="Top"
                              HorizontalContentAlignment="Left"
+                             TextWrapping="Wrap"
                              FontSize="12"
+                             MaxLength="250"
                              FontWeight="DemiBold" Margin="230,12,110,11"/>
                     <mah:Tile x:Name="TileCumplida"  
                               Height="25" 

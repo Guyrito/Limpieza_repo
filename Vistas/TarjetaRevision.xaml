@@ -101,6 +101,7 @@
                                    HorizontalAlignment="Center"
                                    FontSize="15" 
                                    Height="50" 
+                                   TextWrapping="Wrap"
                                    Width="180"
                                    Foreground="Black"
                                    Text="{Binding DisplayNombreActMejora, TargetNullValue=''}" Margin="0,36,0,4"></TextBlock>

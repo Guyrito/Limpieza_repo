@@ -381,7 +381,7 @@ namespace Vistas
         {
             if (TabItemOpciones1.Header.Equals("CLIENTE"))
             {
-                BtnCheckList.Visibility = Visibility.Visible;
+                BtnCheckList.Visibility = Visibility.Collapsed;
                 BtnCasoAsesoria.Visibility = Visibility.Visible;
                 stckPanelTarjetas.Children.Clear();
                 MostrarClientes();

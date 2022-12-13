@@ -147,7 +147,7 @@
                              IsEnabled="False"
                              FontSize="12"
                              FontWeight="DemiBold"
-                             Text="{Binding DisplayNombreAsesoria, TargetNullValue=''}"/>
+                             Text="{Binding DisplayDiligenciaAsesoria, TargetNullValue=''}"/>
 
                     <TextBox Height="126"
                              Width="600" 

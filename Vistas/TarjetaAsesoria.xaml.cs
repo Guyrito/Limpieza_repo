@@ -34,7 +34,7 @@ namespace Vistas
         public string DisplayRazon { get; set; }
         public string DisplayCaso { get; set; }
         public string DisplayDescripcionAsesoria { get; set; }
-        public string DisplayNombreAsesoria { get; set; }
+        public string DisplayDiligenciaAsesoria { get; set; }
 
         private void GridPrincipal_Initialized(object sender, EventArgs e)
         {

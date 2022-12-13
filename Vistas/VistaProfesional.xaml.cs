@@ -211,6 +211,7 @@ namespace Vistas
                 tarjetaAsesoria.DisplayRazon = serviceAsesoria.GetEntity(idActividad).Razon_ases;
                 tarjetaAsesoria.DisplayCaso = serviceAsesoria.GetEntity(idActividad).Estado_caso;
                 tarjetaAsesoria.DisplayDescripcionAsesoria = serviceAsesoria.GetEntity(idActividad).Descripcion;
+                tarjetaAsesoria.DisplayDiligenciaAsesoria = serviceAsesoria.GetEntity(idActividad).Diligencia;
                 return tarjetaAsesoria;
             }
             catch (Exception ex)

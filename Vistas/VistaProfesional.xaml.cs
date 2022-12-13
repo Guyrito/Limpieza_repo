@@ -334,6 +334,7 @@ namespace Vistas
                 };
                 tarjetaRevision.BloqueoTileTomar(MainWindow.IdProfesional, idProfesional);
                 tarjetaRevision.ActividadTomada(serviceActMejora.GetEntity(idActividad).Estado_actividad);
+                tarjetaRevision.BloqueControles(serviceActMejora.GetEntity(idActividad).Estado_asignacion);
                 return tarjetaRevision;
             }
             catch (Exception ex)

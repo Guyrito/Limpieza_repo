@@ -48,6 +48,7 @@ namespace Vistas
             dockPanelInferior.Visibility = Visibility.Collapsed;
             ucTarjetaRevision.Height.Equals(89.775);
         }
+
         private bool ValidarCampos()
         {
             if (txtBoxInfoExtra.Text == "")
@@ -88,6 +89,17 @@ namespace Vistas
                 txtBoxInfoExtra.IsEnabled = false;
             }
         }
+
+        public void BloqueControles( string estado_asign)
+        {
+            if (estado_asign == "Pendiente")
+            {
+                txtBoxInfoExtra.IsEnabled = false;
+                TileNoCumplida.IsEnabled = false;
+                TileCumplida.IsEnabled = false;
+            }
+        }
+
         public void ActividadTomada(string estado)
         {
             if (estado == "Tomada")
@@ -178,6 +190,7 @@ namespace Vistas
                 {
                     GenerarReporte(reporte, idActividadMejora);
                     ActualizarPorReporte(idActividadMejora);
+                    MessageBox.Show("Reporte ingresado.");
                 }
                 else if (ValidarCampos() == false)
                 {
@@ -198,6 +211,7 @@ namespace Vistas
                 {
                     GenerarReporte(reporte, idActividadMejora);
                     ActualizarPorReporte(idActividadMejora);
+                    MessageBox.Show("Reporte ingresado.");
                 }
                 else if (ValidarCampos() == false)
                 {

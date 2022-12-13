@@ -192,6 +192,7 @@
                                   Grid.Column="1"
                                   Height="30"
                                   Width="110"
+                                  Visibility="Hidden"
                                   Content="CASO DE ASESORIA"
                                   Background="#FF4E16D1" Margin="11,17,12,13">
                         </mah:Tile>

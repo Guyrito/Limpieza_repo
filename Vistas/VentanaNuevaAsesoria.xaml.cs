@@ -63,12 +63,23 @@ namespace Vistas
         }
         public bool ValidarCampos()
         {
-            if (ComboBoxAsesorias.Text == " "
-                || datePickerFechaAsesoria.SelectedDate == null
-                || timePickerHoraAsesoria.SelectedDateTime == null
-                && ComboBoxAsesorias.Text == " "
-                && datePickerFechaAsesoria.SelectedDate == null
-                && timePickerHoraAsesoria.SelectedDateTime == null)
+            if (ComboBoxAsesorias.SelectedIndex < 0)
+            {
+                MessageBox.Show("Debe seleccionar una asesoría.", "Validación de campos");
+                return false;
+            }
+            else if (ComboBoxAsesorias.Text == String.Empty
+                && TxtBoxDiligencia.Text == String.Empty
+                && datePickerFechaAsesoria.SelectedDate.ToString() == String.Empty
+                && timePickerHoraAsesoria.SelectedDateTime.ToString() == String.Empty)
+            {
+                MessageBox.Show("Se encontraron todos los campos vacíos en la ventana o no se ha seleccionado una asesoría, favor de rellenar todos los campos y seleccionar una asesoría.", "Validación de campos");
+                return false;
+            }
+            else if (ComboBoxAsesorias.Text == String.Empty
+                || TxtBoxDiligencia.Text == String.Empty
+                || datePickerFechaAsesoria.SelectedDate.ToString() == String.Empty
+                || timePickerHoraAsesoria.SelectedDateTime.ToString() == String.Empty)
             {
                 MessageBox.Show("Se encontraron campos vacíos en la ventana o no se ha seleccionado una asesoría, favor de rellenar todos los campos y seleccionar una asesoría.", "Validación de campos");
                 return false;

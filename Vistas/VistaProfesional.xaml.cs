@@ -15,10 +15,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Vistas
 {
@@ -109,6 +111,19 @@ namespace Vistas
                 clienteTarjetaCompleta.DisplayTelefonoEmpresa = serviceCliente.GetEntity(idCliente).Fono_cliente;
                 clienteTarjetaCompleta.DisplayDireccion = serviceCliente.GetEntity(idCliente).Direccion_emp;
                 clienteTarjetaCompleta.btnDescContrato.Visibility = Visibility.Hidden;
+                clienteTarjetaCompleta.txbEditarNombreEmp.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarNombreEmp.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarRutEmp.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarNombreEmp.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarRutEmp.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarGerente.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarGer.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarMail.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarMail.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarTelef.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarTelef.IsEnabled = false;
+                clienteTarjetaCompleta.imgEditarDirecc.IsEnabled = false;
+                clienteTarjetaCompleta.txbEditarDirecc.IsEnabled = false;
                 //---------------------------------------------------------------------------------------------
                 foreach (Actividad _actividades in serviceActividad.GetEntities())
                 {

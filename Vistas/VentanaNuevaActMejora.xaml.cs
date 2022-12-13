@@ -65,13 +65,17 @@ namespace Vistas
         private bool ValidarCampos()
         {
             if (txtboxNomActMejora.Text == ""
-                || txtboxDescripcionActMejora.Text == ""
-                || datePickerFechaActMejora.SelectedDate == null
-                || timePickerHoraActMejora.SelectedDateTime == null
-                && txtboxNomActMejora.Text == ""
                 && txtboxDescripcionActMejora.Text == ""
                 && datePickerFechaActMejora.SelectedDate == null
                 && timePickerHoraActMejora.SelectedDateTime == null)
+            {
+                MessageBox.Show("Se encontraron todos los campos vacíos en la ventana o no se ha seleccionado una asesoría, favor de rellenar todos los campos y seleccionar una asesoría.", "Validación de campos");
+                return false;
+            }
+            else if(txtboxNomActMejora.Text == ""
+                || txtboxDescripcionActMejora.Text == ""
+                || datePickerFechaActMejora.SelectedDate == null
+                || timePickerHoraActMejora.SelectedDateTime == null)
             {
                 MessageBox.Show("Se encontraron campos vacíos en la ventana, favor de rellenar todos los campos.", "Validación de campos");
                 return false;

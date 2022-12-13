@@ -108,6 +108,7 @@ namespace Vistas
         }
         private void ComboBoxAsesorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //Cambios
             string HeaderCombobox = ComboBoxAsesorias.SelectedItem.ToString().Split(':')[1].Trim();
             ServiceSolicitud serviceSolicitud = new();
             foreach (Solicitud _solicitud in serviceSolicitud.GetEntities())

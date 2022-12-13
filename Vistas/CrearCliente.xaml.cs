@@ -220,7 +220,7 @@ namespace Vistas
                                 {
                                     if (txbMailGer.Text.Contains("@") & txbMailGer.Text.Contains("."))
                                     {
-                                        crearCliente(txbRutEmp.Text, txbNombreEmp.Text, txbDirecEmp.Text, Convert.ToInt32                       (cbProfesional.SelectedValue.ToString()), txbTlfEmp.Text);
+                                        crearCliente(txbRutEmp.Text, txbNombreEmp.Text, txbDirecEmp.Text, Convert.ToInt32(cbProfesional.SelectedValue.ToString()), txbTlfEmp.Text);
 
                                         foreach (Cliente c in sc.GetEntities())
                                         {
